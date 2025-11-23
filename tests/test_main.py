@@ -1,6 +1,6 @@
 import pytest
 import math
-from source.main import circle_per, circle_area
+from main import circle_per, circle_area
 
 @pytest.fixture()
 def before_results():
