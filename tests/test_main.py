@@ -17,3 +17,6 @@ def test_circle_area(before_results):
 
 def test_circle_per_zero():
     assert circle_per(0) == 0
+
+def test_circle_area_zero():
+    assert circle_area(0) == 0
