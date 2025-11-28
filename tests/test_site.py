@@ -1,7 +1,6 @@
-from dataclasses import dataclass, replace
 from time import sleep
 import re
-from playwright.sync_api import Page, expect, Route
+from playwright.sync_api import Page, expect, Route, Dialog, BrowserContext
 
 # def test_wiki(page: Page):
 #     page.goto('https://www.wikipedia.org/')
@@ -43,3 +42,33 @@ def test_response(page: Page):
     page.get_by_role('button', name='Войти').click()
     page.get_by_role('link', name='Мой профиль').click()
     sleep(7)
+
+def test_alert(page: Page):
+    page.goto('https://demoblaze.com/')
+    def accept_alert(alert: Dialog):
+        print(alert.message)
+        alert.accept()
+    page.on('dialog',accept_alert)
+    page.get_by_role('link', name='Samsung galaxy s6').click()
+    page.get_by_role('link', name='Add to cart').click()
+    page.wait_for_event('dialog')
+    page.locator('#cartur').click()
+    sleep(2)
+
+def test_tabs(page: Page, context: BrowserContext):
+    page.goto('https://nomads.com/', wait_until='domcontentloaded')
+    with context.expect_page() as new_tab_event:
+        page.get_by_alt_text('Get insured').click()
+        new_tab = new_tab_event.value
+    new_tab.get_by_role('link', name='Sign me up').click()
+    sleep(5)
+
+def test_iframe(page: Page):
+    page.goto('https://www.w3schools.com/html/html_iframe.asp', wait_until='domcontentloaded')
+    page.frame_locator('iframe[title="W3Schools HTML Tutorial"]').get_by_role('button', name='Sign in').click()
+    sleep(3)
+
+def test_select(page: Page):
+    page.goto('https://www.sql-ex.ru/learn_exercises.php')
+    page.select_option('select[name="lsttpl"]', label="English")
+    sleep(5)
